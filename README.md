@@ -15,7 +15,7 @@ para esto descargamos  utilizamos los siguientes comandos.
 
 ~ sudo -E bash setup_7.x
 
-***Para verificar la instalación y versión***
+**Para verificar la instalación y versión**
 
 ~ node -v
 
@@ -43,10 +43,10 @@ Para probar nuestro codigo, en una terminal dentro de la carpeta del proyecto.
 Cuando estemos seguros de que todo este corriendo de manera satisfactoria,  vamos a conectar nuestro 
 codigo con el openframeworks vía osc 
 
- *** udp.send(buf, 0, buf.length, 12345, "192.168.0.109"); → Acá indicamos a nuestro codigo de javascript que se comunique 
- por el puerto 12345 con la "IP" que se va comunicar ***
+ ** udp.send(buf, 0, buf.length, 12345, "192.168.0.109"); → Acá indicamos a nuestro codigo de javascript que se comunique 
+ por el puerto 12345 con la "IP" que se va comunicar **
  
- Para recibir estos mensajes utilizamos uno de los ejemplos de Openframeworks  [ Comunication/oscReceiveExample ]
+ Para recibir estos mensajes utilizamos uno de los ejemplos de Openframeworks  [ Comunication/oscReceiveExample  (https://github.com/openframeworks/openFrameworks/tree/master/examples/communication/oscReceiveExample)]
  
  En el archivo ofApp.h definimos el puerto que va recibir el mensaje
  
