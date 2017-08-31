@@ -1,19 +1,26 @@
 # Pir-NodeJs
 
-Experimentación con  Raspberry pi V2, Sensor de movimiento PIR, Javascript, NodeJs, Osc y OpenFrameworks.
+## Resumen 
 
-X Olivia jack & Noisk8
+Esta es una experimentación con  usando un Sensor de movimiento PIR conectada a  una raspberry pi enviando datos por osc,  un codigo de Javascript, comunicados por NodeJs y recibido en OpenFrameworks.
 
-Partimos por conectar El sensor de movimiento a la Raspberry pi, [Imagen] y utilizamos un codigo en javascript, que ayudado por las librerias
-(onoff, osc-min, dgram, udp4) esto lo que lo que nos permite recibir es habilitar los pindes Gpio para recibir la señal del sensor.
+cacharriado X Olivia jack & Noisk8
 
-Luego instalamos enla Raspberry pi la versión 7.0.x de NodeJs (Con la versión que viene por default 0.10 puede que no funciones bien)
+## Proceso 
 
-para esto descargamos  utilizamos los siguientes comandos.
+Partimos por conectar El sensor de movimiento a la Raspberry pi, como lo indica la imágen y utilizamos un codigo en javascript, que ayudado por las librerias (onoff, osc-min, dgram, udp4) permite recibir es habilitar los pines Gpio  del raspberry para recibir la señal del sensor.
 
-~ wget https://deb.nodesource.com/setup_7.x
+![Conexiones](https://github.com/Noisk8/Pir-NodeJs/blob/master/PIR%26NodeJS_Peque%C3%B1a.png)
 
-~ sudo -E bash setup_7.x
+Luego instalamos en la Raspberry pi la versión 7.0.x de NodeJs (Con la versión que viene por default 0.10 puede que no funciones bien)
+
+## Instalar NodeJs
+
+para esto descargamos nodeJs utilizando los siguientes comandos.
+
+wget https://deb.nodesource.com/setup_7.x
+
+sudo -E bash setup_7.x
 
 **Para verificar la instalación y versión**
 
@@ -40,7 +47,7 @@ Para probar nuestro codigo, en una terminal dentro de la carpeta del proyecto.
 
 ~sudo node index.js
 
-Cuando estemos seguros de que todo este corriendo de manera satisfactoria,  vamos a conectar nuestro 
+Cuando estemos seguros de que todo este corriendo de manera satisfactoria, vamos a conectar nuestro 
 codigo con el openframeworks vía osc 
 
  ** udp.send(buf, 0, buf.length, 12345, "192.168.0.109"); → Acá indicamos a nuestro codigo de javascript que se comunique 
@@ -57,9 +64,6 @@ codigo con el openframeworks vía osc
 Utilizamos otro ordenador ya con OF ya instalado, Con Abrimos el ejemplo  [ Comunication/oscReceiveExample ]
 
 Mientras este corriendo el Javascript y este lanzando mensaje  este OF debe de estar recibiendo el mensaje.
-
-![Conexiones](https://github.com/Noisk8/Pir-NodeJs/blob/master/PIR%26NodeJS_Peque%C3%B1a.png)
-
 
 
 Version Beta 4ever
