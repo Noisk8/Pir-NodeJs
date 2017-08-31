@@ -58,6 +58,8 @@ Utilizamos otro ordenador ya con OF ya instalado, Con Abrimos el ejemplo  [ Comu
 
 Mientras este corriendo el Javascript y este lanzando mensaje  este OF debe de estar recibiendo el mensaje.
 
+![Conexiones](https://github.com/Noisk8/Pir-NodeJs/blob/master/PIR%26NodeJS_Peque%C3%B1a.png)
+
 
 
 Version Beta 4ever
