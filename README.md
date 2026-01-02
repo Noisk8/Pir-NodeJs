@@ -1,69 +1,153 @@
 # Pir-NodeJs
 
-## Resumen 
+Experimentación con un sensor de movimiento PIR conectado a una Raspberry Pi, enviando datos por OSC mediante Node.js y recibiéndolos en OpenFrameworks.
 
-Esta es una experimentación con  usando un Sensor de movimiento PIR conectada a  una raspberry pi enviando datos por osc,  un codigo de Javascript, comunicados por NodeJs y recibido en OpenFrameworks.
+## Descripción del proyecto
 
-cacharriado X Olivia jack & Noisk8
+Este proyecto muestra cómo:
 
-## Proceso 
+- Leer un sensor de movimiento PIR desde una Raspberry Pi usando Node.js y la librería `onoff`.
+- Encender/apagar un LED según el estado del sensor.
+- Enviar el valor leído (0/1) como mensajes OSC usando `osc-min` y `dgram` hacia otro equipo (por ejemplo, una aplicación hecha en OpenFrameworks).
 
-Partimos por conectar El sensor de movimiento a la Raspberry pi, como lo indica la imágen y utilizamos un codigo en javascript, que ayudado por las librerias (onoff, osc-min, dgram, udp4) permite recibir es habilitar los pines Gpio  del raspberry para recibir la señal del sensor.
+El script principal es:
 
-![Conexiones](https://github.com/Noisk8/Pir-NodeJs/blob/master/PIR%26NodeJS_Peque%C3%B1a.png)
+- `index.js`: configura los pines GPIO (LED y PIR), escucha los cambios del sensor y, cada vez que hay movimiento, envía un mensaje OSC a la IP y puerto configurados.
 
-Luego instalamos en la Raspberry pi la versión 7.0.x de NodeJs (Con la versión que viene por default 0.10 puede que no funciones bien)
+## Diagrama de conexiones
 
-## Instalar NodeJs
+A nivel de hardware, las conexiones entre el sensor PIR, el LED y la Raspberry Pi se ilustran en el siguiente diagrama:
 
-para esto descargamos nodeJs utilizando los siguientes comandos.
+![Diagrama de conexiones PIR + NodeJS](PIR&NodeJS_Pequeña.png)
 
-wget https://deb.nodesource.com/setup_7.x
+*(Si ves este proyecto en GitHub, la misma imagen está incluida en el repositorio.)*
 
-sudo -E bash setup_7.x
+## Requisitos
 
-**Para verificar la instalación y versión**
+- Raspberry Pi con un sistema basado en Debian (Raspberry Pi OS u otro similar).
+- Node.js (recomendado ≥ 7.x; con la versión 0.10 que viene por defecto puede fallar).
+- Un sensor de movimiento PIR.
+- Un LED (opcional, para feedback visual) con su resistencia.
+- Acceso de red entre la Raspberry Pi y el equipo que recibirá los mensajes OSC (por ejemplo, un ordenador con OpenFrameworks).
 
-~ node -v
+Dependencias de Node.js (ya listadas en `package.json`):
 
-Luego accedemos a la carpeta donde tengamos el proyecto y estando allí ejecutamos 
+- `onoff`
+- `osc-min`
 
-~npm init 
+`index.js` también usa `dgram` (módulo estándar de Node.js para UDP).
 
-~nano index.js (Acá va el codigo del repo)
+## Instalación
 
-Ahora instalamos las librerias 
+1. **Instalar Node.js (si aún no lo tienes actualizado)**
 
-~npm install onoff --save
+   En Raspberry Pi (ejemplo con NodeSource):
 
-~npm install osc-min --save
+   ```bash
+   wget https://deb.nodesource.com/setup_7.x
+   sudo -E bash setup_7.x
+   sudo apt install -y nodejs
+   node -v
+   ```
 
-~npm install dgram --save
+2. **Clonar o copiar este repositorio en la Raspberry Pi**
 
-~npm install udp --save
+   ```bash
+   cd /RUTA/DONDE/QUIERAS
+   git clone https://github.com/Noisk8/Pir-NodeJs.git
+   cd Pir-NodeJs
+   ```
 
+3. **Instalar dependencias del proyecto**
 
-Para probar nuestro codigo, en una terminal dentro de la carpeta del proyecto. 
+   (si no se han instalado ya):
 
-~sudo node index.js
+   ```bash
+   npm install
+   ```
 
-Cuando estemos seguros de que todo este corriendo de manera satisfactoria, vamos a conectar nuestro 
-codigo con el openframeworks vía osc 
+   Esto instalará `onoff` y `osc-min` según `package.json`.
 
- ** udp.send(buf, 0, buf.length, 12345, "192.168.0.109"); → Acá indicamos a nuestro codigo de javascript que se comunique 
- por el puerto 12345 con la "IP" que se va comunicar **
- 
- Para recibir estos mensajes utilizamos uno de los ejemplos de Openframeworks  [ Comunication/oscReceiveExample  (https://github.com/openframeworks/openFrameworks/tree/master/examples/communication/oscReceiveExample)]
- 
- En el archivo ofApp.h definimos el puerto que va recibir el mensaje
- 
- *** // listen on port 12345
-#define PORT 12345 → Acá se define el puerto que escucha. *** 
+## Conexiones de hardware
 
+El código usa los siguientes pines GPIO (numeración BCM):
 
-Utilizamos otro ordenador ya con OF ya instalado, Con Abrimos el ejemplo  [ Comunication/oscReceiveExample ]
+- `LED` en GPIO 20 (salida)
+- `PIR` en GPIO 21 (entrada, con detección en "both" flancos)
 
-Mientras este corriendo el Javascript y este lanzando mensaje  este OF debe de estar recibiendo el mensaje.
+Conexión típica:
 
+- Sensor PIR:
+  - VCC → 5V o 3.3V de la Raspberry Pi (según el modelo de PIR)
+  - GND → GND de la Raspberry Pi
+  - OUT → GPIO 21
+- LED (opcional):
+  - Ánodo (+) → resistencia → GPIO 20
+  - Cátodo (–) → GND
 
-Version Beta 4ever
+La imagen del apartado anterior (`PIR&NodeJS_Pequeña.png`) resume este esquema de cableado.
+
+## Configuración de OSC
+
+En `index.js` se envía un mensaje OSC cuando cambia el valor del PIR:
+
+```js
+udp.send(buf, 0, buf.length, 12345, "192.168.0.109");
+```
+
+- `12345` es el puerto de destino.
+- `192.168.0.109` es la IP del ordenador que recibirá el OSC.
+
+Adáptalos a tu red y a tu aplicación receptora.
+
+### Dirección OSC
+
+El mensaje se envía a la dirección:
+
+- `/PIR`
+
+con un argumento entero (`0` o `1`) que representa el estado actual del sensor.
+
+## Uso
+
+1. Asegúrate de que el cableado del PIR y el LED sea correcto (puedes guiarte por el diagrama de conexiones).
+2. Comprueba que la Raspberry Pi y el ordenador receptor estén en la misma red.
+3. Edita `index.js` si necesitas cambiar:
+   - La IP de destino.
+   - El puerto OSC.
+   - Los pines GPIO usados.
+4. Desde la carpeta del proyecto, ejecuta:
+
+   ```bash
+   sudo node index.js
+   ```
+
+   Se usa `sudo` porque el acceso a los pines GPIO suele requerir permisos elevados.
+
+5. Mueve algo delante del sensor PIR:
+   - Verás en la terminal mensajes tipo `b1` o `b0` según el estado.
+   - El LED en GPIO 20 cambiará su estado.
+   - Se enviarán mensajes OSC al destino configurado.
+
+Para detener el script, pulsa `Ctrl + C`. El proceso liberará el recurso del PIR (`pir.unexport()`) y saldrá.
+
+## Integración con OpenFrameworks (ejemplo)
+
+En otro equipo, con OpenFrameworks, puedes usar el ejemplo `communication/oscReceiveExample` para recibir los mensajes OSC.
+
+En `ofApp.h` (o el archivo equivalente), define el puerto:
+
+```cpp
+// listen on port 12345
+#define PORT 12345
+```
+
+Asegúrate de que coincida con el puerto configurado en `index.js`.
+
+Mientras `index.js` esté corriendo y enviando mensajes OSC, el ejemplo de OpenFrameworks debería ir recibiendo los cambios del sensor PIR.
+
+## Créditos
+
+Cacharriado por Olivia Jack & Noisk8.
+
+Versión beta 4ever.
